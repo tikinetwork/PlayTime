@@ -1,0 +1,8 @@
+name: PlayTime
+main: dev.foolen.playtime.PlayTimePlugin
+version: 1.0
+
+commands:
+  playtime:
+    usage: /<command>
+    description: Shows total online playtime

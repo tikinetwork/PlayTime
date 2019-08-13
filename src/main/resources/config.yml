@@ -1,0 +1,6 @@
+database:
+  hostname: 'localhost'
+  port: 3306
+  database: 'playtime'
+  username: 'root'
+  password: 'root'
