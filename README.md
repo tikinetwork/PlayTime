@@ -11,9 +11,14 @@
 7. Enjoy!
 
 ## Commands
-| Command     | Description                  |
-|-------------|------------------------------|
-| `/playtime` | Shows total online playtime| |
+| Command     | Description                 |
+|-------------|-----------------------------|
+| `/playtime` | Shows total online playtime |
+
+## Permissions
+| Command             | Description                          |
+|---------------------|--------------------------------------|
+| `playtime.playtime` | Grants access to `/playtime` command |
 
 ## Authors
 - [Tjeu Foolen](https://github.com/tjeufoolen/)

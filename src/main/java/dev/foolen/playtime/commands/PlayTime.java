@@ -1,5 +1,7 @@
 package dev.foolen.playtime.commands;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,6 +20,15 @@ public class PlayTime implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if (sender instanceof Player) {
+			if (!sender.hasPermission("playtime.playtime")) {
+				Player p = (Player) sender;
+				p.sendMessage(
+						PlayTimePlugin.PREFIX + ChatColor.RED + "You do not have permission to execute this command.");
+				return true;
+			}
+		}
+
 		// Check if looking up own playtime
 		if (args.length == 0) {
 			// Check if console isn't looking up its own playtime
@@ -48,19 +59,35 @@ public class PlayTime implements CommandExecutor {
 		});
 
 		// If not online, find uuid from mojang api
+		boolean isValidAccount = true;
+		long totalSecondsPlayed = 0;
 		if (targetPlayer == null) {
-			targetPlayer = Bukkit.getPlayer(UUIDFetcher.getUUID(playername));
+			UUID uuid = UUIDFetcher.getUUID(playername);
+			if (uuid != null) {
+				totalSecondsPlayed = PlayerDB.getTotalSecondsPlayed(uuid);
+			} else {
+				isValidAccount = false;
+			}
 		}
-
-		long totalSecondsPlayed = PlayerDB.getTotalSecondsPlayed(targetPlayer.getUniqueId());
 
 		// Check if sender is console
 		if (!(sender instanceof Player)) {
+			if (!isValidAccount) {
+				Logger.info(playername + " does not exist!");
+				return true;
+			}
+
 			Logger.info(playername + " has been online for " + getFormattedPlayTime(totalSecondsPlayed) + ".");
 			return true;
 		}
 
 		Player p = (Player) sender;
+
+		if (!isValidAccount) {
+			p.sendMessage(PlayTimePlugin.PREFIX + ChatColor.RED + playername + " does not exist!");
+			return true;
+		}
+
 		p.sendMessage(PlayTimePlugin.PREFIX + playername + "has been online for " + ChatColor.GRAY
 				+ getFormattedPlayTime(totalSecondsPlayed) + ChatColor.RESET + ".");
 		return true;

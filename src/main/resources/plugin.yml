@@ -6,3 +6,8 @@ commands:
   playtime:
     usage: /<command>
     description: Shows total online playtime
+
+permissions:
+  playtime.playtime:
+    description: Grants access to /playtime command
+    default: op

@@ -1,8 +1,10 @@
 package dev.foolen.playtime.utils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * @author Jofkos
- * https://gist.github.com/Jofkos/d0c469528b032d820f42
+ * @author Jofkos https://gist.github.com/Jofkos/d0c469528b032d820f42
  */
 
 public class UUIDFetcher {
@@ -81,26 +82,32 @@ public class UUIDFetcher {
 	 * @see UUIDFetcher#FEBRUARY_2015
 	 */
 	public static UUID getUUIDAt(String name, long timestamp) {
+		UUID uuid = null;
 		name = name.toLowerCase();
+
 		if (uuidCache.containsKey(name)) {
 			return uuidCache.get(name);
 		}
+
 		try {
-			HttpURLConnection connection = (HttpURLConnection) new URL(String.format(UUID_URL, name, timestamp / 1000))
-					.openConnection();
+			HttpURLConnection connection = (HttpURLConnection) new URL(String.format(UUID_URL, name, timestamp / 1000)).openConnection();
 			connection.setReadTimeout(5000);
 			UUIDFetcher data = gson.fromJson(new BufferedReader(new InputStreamReader(connection.getInputStream())),
 					UUIDFetcher.class);
+			
+			if (data != null) {
+				uuidCache.put(name, data.id);
+				nameCache.put(data.id, data.name);
 
-			uuidCache.put(name, data.id);
-			nameCache.put(data.id, data.name);
-
-			return data.id;
-		} catch (Exception e) {
+				uuid = data.id;
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return null;
+		return uuid;
 	}
 
 	/**
