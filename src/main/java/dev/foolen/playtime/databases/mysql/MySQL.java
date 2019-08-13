@@ -30,7 +30,7 @@ public class MySQL {
 		PASSWORD = config.getString("database.password");
 
 		connect();
-		
+
 		loadDatabases();
 	}
 
@@ -54,7 +54,8 @@ public class MySQL {
 		try {
 			connection = datasource.getConnection();
 		} catch (SQLException e) {
-			Logger.warning("Something went wrong while getting a connection. Did you create the database specified in config.yml?");
+			Logger.warning(
+					"Something went wrong while getting a connection. Did you create the database specified in config.yml?");
 			e.printStackTrace();
 		}
 

@@ -30,7 +30,7 @@ public class PlayTime implements CommandExecutor {
 			// Show own total playtime
 			Player p = (Player) sender;
 			long totalSecondsPlayed = PlayerDB.getTotalSecondsPlayed(p.getUniqueId());
-			
+
 			p.sendMessage(PlayTimePlugin.PREFIX + "You have been online for " + ChatColor.GRAY
 					+ getFormattedPlayTime(totalSecondsPlayed) + ChatColor.RESET + ".");
 			return true;
@@ -65,16 +65,16 @@ public class PlayTime implements CommandExecutor {
 				+ getFormattedPlayTime(totalSecondsPlayed) + ChatColor.RESET + ".");
 		return true;
 	}
-	
+
 	private String getFormattedPlayTime(long totalSecondsPlayed) {
 		final int MINUTES_IN_AN_HOUR = 60;
-	    final int SECONDS_IN_A_MINUTE = 60;
+		final int SECONDS_IN_A_MINUTE = 60;
 
-	    int seconds = (int) (totalSecondsPlayed % SECONDS_IN_A_MINUTE);
-	    int totalMinutes = (int) (totalSecondsPlayed / SECONDS_IN_A_MINUTE);
-	    int minutes = totalMinutes % MINUTES_IN_AN_HOUR;
-	    int hours = totalMinutes / MINUTES_IN_AN_HOUR;
-		
-	    return hours + " hours " + minutes + " minutes " + seconds + " seconds";
+		int seconds = (int) (totalSecondsPlayed % SECONDS_IN_A_MINUTE);
+		int totalMinutes = (int) (totalSecondsPlayed / SECONDS_IN_A_MINUTE);
+		int minutes = totalMinutes % MINUTES_IN_AN_HOUR;
+		int hours = totalMinutes / MINUTES_IN_AN_HOUR;
+
+		return hours + " hours " + minutes + " minutes " + seconds + " seconds";
 	}
 }

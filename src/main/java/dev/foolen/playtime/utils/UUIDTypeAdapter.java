@@ -6,6 +6,11 @@ import com.google.gson.stream.JsonWriter;
 import java.util.UUID;
 import com.google.gson.TypeAdapter;
 
+/**
+ * @author Techcable
+ * https://github.com/Techcable/Authlib/blob/master/src/main/java/com/mojang/util/UUIDTypeAdapter.java
+ */
+
 public class UUIDTypeAdapter extends TypeAdapter<UUID> {
 	public void write(final JsonWriter out, final UUID value) throws IOException {
 		out.value(fromUUID(value));

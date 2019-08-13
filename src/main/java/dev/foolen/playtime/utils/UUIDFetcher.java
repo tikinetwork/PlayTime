@@ -14,6 +14,11 @@ import java.util.function.Consumer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * @author Jofkos
+ * https://gist.github.com/Jofkos/d0c469528b032d820f42
+ */
+
 public class UUIDFetcher {
 
 	/**

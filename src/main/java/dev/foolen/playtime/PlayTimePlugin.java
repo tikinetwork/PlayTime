@@ -43,8 +43,6 @@ public class PlayTimePlugin extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		//TODO: handle reload (playerquitevent)
-		
 		// Close DB connection
 		mysql.close();
 	}
