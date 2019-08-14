@@ -2,9 +2,11 @@ package dev.foolen.playtime.databases.mysql;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import org.bukkit.configuration.Configuration;
 
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import dev.foolen.playtime.PlayTimePlugin;
@@ -35,13 +37,28 @@ public class MySQL {
 	}
 
 	private void connect() {
-		datasource = new HikariDataSource();
-		String connectionUrl = "jdbc:mysql://" + HOSTNAME + ":" + PORT + "/" + DATABASE;
-
-		datasource.setMaximumPoolSize(10);
-		datasource.setJdbcUrl(connectionUrl);
-		datasource.setUsername(USERNAME);
-		datasource.setPassword(PASSWORD);
+		Properties props = new Properties();
+		props.setProperty("jdbcUrl", "jdbc:mysql://" + HOSTNAME + ":" + PORT + "/" + DATABASE);
+		props.setProperty("username", USERNAME);
+		props.setProperty("password", PASSWORD);
+		
+		props.setProperty("dataSource.dataSourceClassName", "com.mysql.cj.jdbc.MysqlDataSource");
+		props.setProperty("dataSource.maximumPoolSize", "10");
+		props.setProperty("dataSource.cachePrepStmts", "true");
+		props.setProperty("dataSource.prepStmtCacheSize", "250");
+		props.setProperty("dataSource.prepStmtCacheSqlLimit", "2048");
+		props.setProperty("dataSource.useServerPrepStmts", "true");
+		props.setProperty("dataSource.useLocalSessionState", "true");
+		props.setProperty("dataSource.rewriteBatchedStatements", "true");
+		props.setProperty("dataSource.cacheResultSetMetadata", "true");
+		props.setProperty("dataSource.cacheServerConfiguration", "true");
+		props.setProperty("dataSource.elideSetAutoCommits", "true");
+		props.setProperty("dataSource.maintainTimeStats", "false");
+		
+		HikariConfig hconfig = new HikariConfig(props);
+		
+		datasource = new HikariDataSource(hconfig);
+		datasource.setLeakDetectionThreshold(60 * 1000);
 	}
 
 	private void loadDatabases() {

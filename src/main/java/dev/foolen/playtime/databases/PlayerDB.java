@@ -1,5 +1,6 @@
 package dev.foolen.playtime.databases;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,10 +16,10 @@ public class PlayerDB {
 	private void createTable() {
 		String sql = "CREATE TABLE IF NOT EXISTS `players` (`uuid` varchar(255) NOT NULL,`total_seconds_played` int(11) NOT NULL,PRIMARY KEY(`uuid`))";
 
-		try {
-			PreparedStatement pstmt = MySQL.getConnection().prepareStatement(sql);
-			pstmt.executeUpdate();
-			pstmt.close();
+		try (Connection connection = MySQL.getConnection()) {
+			try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+				pstmt.executeUpdate();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -31,28 +32,26 @@ public class PlayerDB {
 
 			String sql = "UPDATE `players` SET `total_seconds_played`=? WHERE `uuid`=?";
 
-			try {
-				PreparedStatement pstmt = MySQL.getConnection().prepareStatement(sql);
+			try (Connection connection = MySQL.getConnection()) {
+				try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+					pstmt.setLong(1, totalSecondsPlayed);
+					pstmt.setString(2, uuid.toString());
 
-				pstmt.setLong(1, totalSecondsPlayed);
-				pstmt.setString(2, uuid.toString());
-
-				pstmt.executeUpdate();
-				pstmt.close();
+					pstmt.executeUpdate();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		} else {
 			String sql = "INSERT INTO players (`uuid`,`total_seconds_played`) VALUES (?,?)";
 
-			try {
-				PreparedStatement pstmt = MySQL.getConnection().prepareStatement(sql);
+			try (Connection connection = MySQL.getConnection()) {
+				try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+					pstmt.setString(1, uuid.toString());
+					pstmt.setLong(2, totalSecondsPlayed);
 
-				pstmt.setString(1, uuid.toString());
-				pstmt.setLong(2, totalSecondsPlayed);
-
-				pstmt.executeUpdate();
-				pstmt.close();
+					pstmt.executeUpdate();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -64,18 +63,17 @@ public class PlayerDB {
 
 		String sql = "SELECT * FROM `players` WHERE `uuid`=? LIMIT 1";
 
-		try {
-			PreparedStatement pstmt = MySQL.getConnection().prepareStatement(sql);
+		try (Connection connection = MySQL.getConnection()) {
+			try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+				pstmt.setString(1, uuid.toString());
 
-			pstmt.setString(1, uuid.toString());
+				try (ResultSet result = pstmt.executeQuery()) {
+					while (result.next()) {
+						isPresent = true;
+					}
+				}
 
-			ResultSet result = pstmt.executeQuery();
-			while (result.next()) {
-				isPresent = true;
 			}
-
-			result.close();
-			pstmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -88,18 +86,16 @@ public class PlayerDB {
 
 		String sql = "SELECT `total_seconds_played` FROM `players` WHERE `uuid`=? LIMIT 1";
 
-		try {
-			PreparedStatement pstmt = MySQL.getConnection().prepareStatement(sql);
+		try (Connection connection = MySQL.getConnection()) {
+			try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+				pstmt.setString(1, uuid.toString());
 
-			pstmt.setString(1, uuid.toString());
-
-			ResultSet result = pstmt.executeQuery();
-			while (result.next()) {
-				totalSecondsPlayed = Long.parseLong(result.getString("total_seconds_played"));
+				try (ResultSet result = pstmt.executeQuery()) {
+					while (result.next()) {
+						totalSecondsPlayed = Long.parseLong(result.getString("total_seconds_played"));
+					}
+				}
 			}
-
-			result.close();
-			pstmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
